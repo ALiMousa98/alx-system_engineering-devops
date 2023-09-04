@@ -2,8 +2,8 @@
 # configures a new Ubuntu machine
 
 # Install nginx on web-01 server
-apt-get -y update
-apt-get -y install nginx
+sudo apt-get -y update
+sudo apt-get -y install nginx
 
 # Add custom response header to know the server name for debugging
 HOST_NAME=$(hostname)
@@ -31,4 +31,4 @@ if [[ -z $FIND ]]; then
     sed -i "40i $ERROR" /etc/nginx/sites-available/default
 fi
 
-service nginx restart
+sudo service nginx restart
