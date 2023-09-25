@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 """Accessing a REST API for todo lists of employees and exporting to CSV"""
 
+import csv
 import requests
 import sys
-import csv
+
 
 def fetch_employee_todo_progress(employee_id, baseUrl):
     try:
@@ -18,25 +19,16 @@ def fetch_employee_todo_progress(employee_id, baseUrl):
         todos = requests.get(todosUrl).json()
 
         # Prepare CSV file
-        csv_filename = f"{employee_id}.csv"
-        with open(csv_filename, mode='w', newline='') as csv_file:
-            fieldnames = ["USER_ID", "USERNAME", "TASK_COMPLETED_STATUS", "TASK_TITLE"]
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writeheader()
-
+        with open('{}.csv'.format(employee_id), 'w') as file:
             for todo in todos:
-                task_completed_status = todo['completed']
-                task_title = todo['title']
-                writer.writerow({
-                    "USER_ID": employee_id,
-                    "USERNAME": employee_name,
-                    "TASK_COMPLETED_STATUS": task_completed_status,
-                    "TASK_TITLE": task_title
-                })
+                file.write('"{}","{}","{}","{}"\n'.format(
+                    employee_id, employee_name, todo.get('completed'),
+                    todo.get('title')))
 
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -46,4 +38,3 @@ if __name__ == "__main__":
     baseUrl = "https://jsonplaceholder.typicode.com/users"
     employee_id = int(sys.argv[1])
     fetch_employee_todo_progress(employee_id, baseUrl)
-
