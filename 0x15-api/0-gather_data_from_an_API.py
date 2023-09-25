@@ -24,10 +24,14 @@ def fetch_employee_todo_progress(employee_id, baseUrl):
         print('Employee {} is done with tasks({}/{}):'.format(
             employee_name, completed_tasks, total_tasks))
 
+        done_todos = []
         # List completed task titles
         for todo in todos:
-            if todo['completed']:
-                print(f'\t{todo["title"]}')
+            if todo.get('completed'):
+                done_todos.append(todo)
+
+        for todo in done_todos:
+            print("\t {}".format(todo.get('title')))
 
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
