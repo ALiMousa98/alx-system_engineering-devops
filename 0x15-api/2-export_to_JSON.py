@@ -20,19 +20,16 @@ def fetch_employee_todo_progress(employee_id, baseUrl):
         todos = requests.get(todosUrl).json()
 
         # Export to JSON
-        json_filename = f"{employee_id}.json"
-        data = {
-            "USER_ID": [
-                {
-                    "task": todo['title'],
-                    "completed": todo['completed'],
-                    "username": employee_name
-                }
-                for todo in todos
-            ]
-        }
-        with open(json_filename, 'w') as json_file:
-            json.dump(data, json_file)
+        dictionary = {employee_id: []}
+        for todo in todos:
+            dictionary[employee_id].append({
+                "task": todo.get('title'),
+                "completed": todo.get('completed'),
+                "username": employee_name
+                })
+
+        with open('{}.json'.format(employee_id), 'w') as filename:
+            json.dump(dictionary, filename)
 
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
